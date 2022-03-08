@@ -73,4 +73,24 @@ try {
     System.out.println("Fehler im SQL-Insert Statement: " + e.getMessage());
 }
 ```
-![Eingefuegter Datensatz](https://imgur.com/a/ssXWa1k)
+![Eingefuegter Datensatz](https://i.imgur.com/nNZCcrr.png)
+
+### Prepared-Statement für die Aenderung von Daten in der DB
+
+Es koennen auch Daten in der Datenbank geaendert werden. Hierbei wird ein `UPDATE` Statement verwendet. Es wird die `id` des zu aendernden Datensatzes verwendet und die Datenfelder, die geaendert werden sollten. Der Rest ist vergleichbar mit einem `INSERT` Statement. Hier wird der `name` des Studenten mit der `id` 2 auf "Meili" gesetzt.
+
+```java
+String updateStudent = "UPDATE `student` SET `name` = ? WHERE `student`.`id` = 2";
+preparedStatement.setString(1, "Meili");
+int rowAffected = preparedStatement.executeUpdate();
+```
+
+### Prepared-Statement für das Loeschen von Daten in der DB
+
+Das Loeschen von Datensaetzen wird durch ein `DELETE` Statement ermoeglicht. Es wird die Tabelle und die `id` des zu loeschenden Studenten angegeben.
+
+```java
+String deleteStudent = "DELETE FROM `student`WHERE `student`.`id` = 3";
+```
+![Geloeschter Datensatz](https://i.imgur.com/3f8Y8oO.png)
+

@@ -11,7 +11,58 @@ public class Jdbcdemo {
 	public static void main(String[] args) {
 
 		// selectAllDemo();
-		insertStudent();
+		// insertStudent();
+		// updateStudent();
+		deleteStudent();
+	}
+
+	public static void deleteStudent(){
+		String deleteStudent = "DELETE FROM `student`WHERE `student`.`id` = 3";
+		String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
+		String connectionUser = "root";
+		String connectionPass = null;
+
+		try {
+			Connection conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPass);
+			System.out.println("Connection successful");
+			PreparedStatement preparedStatement = conn.prepareStatement(deleteStudent);
+
+			try {
+				int rowAffected = preparedStatement.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println("Fehler im SQL-Update Statement: " + e.getMessage());
+			}
+
+
+
+		} catch (SQLException e) {
+			System.out.println("Connection error: " + e.getMessage());
+		}
+	}
+
+	public static void updateStudent(){
+		String updateStudent = "UPDATE `student` SET `name` = ? WHERE `student`.`id` = 2";
+		String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
+		String connectionUser = "root";
+		String connectionPass = null;
+
+		try {
+			Connection conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPass);
+			System.out.println("Connection successful");
+			PreparedStatement preparedStatement = conn.prepareStatement(updateStudent);
+
+			try {
+				preparedStatement.setString(1, "Meili");
+				int rowAffected = preparedStatement.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println("Fehler im SQL-Update Statement: " + e.getMessage());
+			}
+
+
+
+		} catch (SQLException e) {
+			System.out.println("Connection error: " + e.getMessage());
+		}
 	}
 
 	public static void insertStudent(){
