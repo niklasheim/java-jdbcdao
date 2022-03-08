@@ -13,7 +13,35 @@ public class Jdbcdemo {
 		// selectAllDemo();
 		// insertStudent();
 		// updateStudent();
-		deleteStudent();
+		// deleteStudent();
+		findStudentByPattern("i");
+	}
+
+	public static void findStudentByPattern(String pattern){
+		String selectAllStudents = "SELECT * FROM `student` WHERE `student`.`name` LIKE ?";
+		String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
+		String connectionUser = "root";
+		String connectionPass = null;
+
+		try {
+			Connection conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPass);
+			System.out.println("Connection successful");
+
+			PreparedStatement preparedStatement = conn.prepareStatement(selectAllStudents);
+			preparedStatement.setString(1, "%" + pattern + "%");
+			ResultSet rs = preparedStatement.executeQuery();
+
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String name = rs.getString("name");
+				String email = rs.getString("email");
+
+				System.out.printf("Student aus der DB mit [Pattern] %s: [ID] %d, [Name] %s, [E-Mail] %s.\n", pattern, id, name, email);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Connection error: " + e.getMessage());
+		}
 	}
 
 	public static void deleteStudent(){

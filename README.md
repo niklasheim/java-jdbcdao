@@ -94,3 +94,11 @@ String deleteStudent = "DELETE FROM `student`WHERE `student`.`id` = 3";
 ```
 ![Geloeschter Datensatz](https://i.imgur.com/3f8Y8oO.png)
 
+### Prepared-Statement für die Abfrage mit Filter von Daten aus der DB
+
+Beim Auslesen von Datensaetzen koennen diese auch gefiltert werdem. Hierbei wird gesucht, ob der `name` ein gewisses Pattern aufweist oder nicht. Nur Datensaetze die dem Filter entsprechen werden von der Datenbank zurueckgegeben.
+
+```java
+String selectAllStudents = "SELECT * FROM `student` WHERE `student`.`name` LIKE ?";
+preparedStatement.setString(1, "%" + pattern + "%");
+```
