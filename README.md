@@ -102,3 +102,11 @@ Beim Auslesen von Datensaetzen koennen diese auch gefiltert werdem. Hierbei wird
 String selectAllStudents = "SELECT * FROM `student` WHERE `student`.`name` LIKE ?";
 preparedStatement.setString(1, "%" + pattern + "%");
 ```
+
+## AUFGABE 2: JDBC INTRO TEIL 2
+
+### Anlegen einer neuen Tabelle
+![Anlegen einer neuen Tabelle](https://i.imgur.com/4eQOqTO.png)
+
+### Tabelle mit Datensaetzen
+![Tabelle mit Datensaetzen](https://i.imgur.com/SqO9qKO.png)
