@@ -155,3 +155,80 @@ Klasse die sich um die Ein- und Ausgabe kuemmert.
 #### Klasse Course
 
 `Course` ist die Hauptklasse des Projekts, sie baut auf `BaseEntitiy` auf und ergaenzt sie um Datenfelder und Funktionen. Es gibt zwei Konstruktoren, einmal mit allen Datenfeldern (Bestehender Datensatz) und einmal ohne `id` (Neuer Datensatz).
+
+### Repositiory
+
+#### BaseRepository
+Das `BaseRepository` dient als Vorlage fuer alle Repos die angelegt werden. Es beinhaltet die standard CRUD-Operationen und ist mit allgemeinen Typen definiert (T, I).
+
+```java
+public interface BaseRepository<T, I> {
+    Optional<T> insert(T entity);
+    Optional<T> getById(I id);
+    List<T> getAll();
+    Optional<T> update(T entitiy);
+    void deleteById(I id);
+}
+```
+
+#### MyCourseRepository
+
+Das `MyCourseRepository` erbt von `BaseRepository` und definiert weitere Funktionen, die spezifisch fuer die Course Entities benoetigt werden.
+
+```java
+public interface MyCourseRepository extends BaseRepository<Course, Long> {
+    List<Course> findAllCoursesByName(String name);
+    List<Course> findAllCoursesByDescription(String description);
+    List<Course> findAllCoursesByNameOrDescription(String searchText);
+    List<Course> findAllCoursesByCourseTyp(CourseType courseType);
+    List<Course> findAllCoursesByStartDate(Date date);
+    List<Course> findAllCoursesByEndDate(Date date);
+    List<Course> findAllRunningCourses();
+}
+```
+
+#### MysqlCourseRepository
+
+Das `MysqlCourseRepository` implementiert nun das `MyCourseRepository` und muss nun alle Funktion impementieren uns ausarbeiten. Eine Instanz dieser Klasse wird er CLI uebergeben. Sie baut die Verbindung zur Datenbank auf und beinhaltet alle Funktionen, die zur Ausgabe oder Bearbeitung gebraucht werden.
+
+### Funktion Ausgabe aller Kurse
+
+```java
+public List<Course> getAll() {
+    String sql = "SELECT * FROM `courses`";
+    try {
+        PreparedStatement preparableStatement;
+        preparableStatement = conn.prepareStatement(sql);
+        ResultSet resultSet = preparableStatement.executeQuery();
+        ArrayList<Course> arrayList = new ArrayList<Course>();
+        while (resultSet.next()) {
+            arrayList.add(new Course(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("description"), resultSet.getInt("hours"), resultSet.getDate("begindate"), resultSet.getDate("enddate"), CourseType.valueOf(resultSet.getString("courseType"))));
+        }
+        return arrayList;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+```
+
+### Cli Ausgabe aller Kurse
+
+In der Klasse `Cli` wird nun die Methode definiert, um alle Kurse auszugeben.
+
+```java
+private void showAllCourses(){
+    List<Course> list = null;
+
+    list = repo.getAll();
+
+    if(list.size() > 0){
+        for (Course course : list) {
+            System.out.println(course);
+        }
+    } else {
+        System.out.println("Kursliste leer.");
+    }
+}
+```

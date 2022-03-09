@@ -1,7 +1,5 @@
 package com.htlimst.mycoursesystem.domain;
 
-import javax.management.relation.InvalidRoleValueException;
-
 public abstract class BaseEntity {
     
     private Long id;
