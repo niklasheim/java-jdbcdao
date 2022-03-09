@@ -116,3 +116,42 @@ preparedStatement.setString(1, "%" + pattern + "%");
 ### Dao Allgemein
 
 Dao (Data Access Objekt) ist ein Entwurfsmuster, das den Zugriff auf eine Datenquelle so kapselt, dass diese leicht ausgetauscht werden kann.
+
+### Datenbank
+
+Erstellte Datenbank fuer das neue Projekt.
+![enter image description here](https://i.imgur.com/0nnhgGX.png)
+
+### Verbindung zur Datenbank
+
+Die Verbindung zur Datenbank wird ueber eine eigene Klasse erzeugt. Hierbei wird ein `Singleton` Pattern verwendet. Dies bedeutet, dass diese Klasse nur eine Instanz gleichzeitig haben kann. Um dies zu ermoeglichen ist der Konstruktor der Klasse privat und die Instanz wird ueber eine staische Methode erzeugt. Die Verbindung wird in der Klasse in einer statischen Variable gespeichert. Ist diese `null`, wird eine neuer Verbindung erzeugt, sonst wird die bestehende zurueckgegeben.
+
+```java
+public class MysqlDatabaseConnection {
+    
+    private static Connection conn = null;
+    private MysqlDatabaseConnection(){}
+
+    public static Connection getConnection(String url, String user, String passwd) throws ClassNotFoundException, SQLException{
+        if(conn == null){
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(url, user, passwd);
+        } 
+        return conn; 
+    }
+}
+```
+
+### Klasse Cli
+
+Klasse die sich um die Ein- und Ausgabe kuemmert.
+
+### Domain
+
+#### Klasse BaseEntity
+
+`BaseEntitiy` ist die Grundlage fuer alle zu erstellenden Identitaeten. Sie beinhaltet lediglich eine `id` mit `getter`,  `setter`, und `constructor`.
+
+#### Klasse Course
+
+`Course` ist die Hauptklasse des Projekts, sie baut auf `BaseEntitiy` auf und ergaenzt sie um Datenfelder und Funktionen. Es gibt zwei Konstruktoren, einmal mit allen Datenfeldern (Bestehender Datensatz) und einmal ohne `id` (Neuer Datensatz).
