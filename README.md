@@ -110,3 +110,9 @@ preparedStatement.setString(1, "%" + pattern + "%");
 
 ### Tabelle mit Datensaetzen
 ![Tabelle mit Datensaetzen](https://i.imgur.com/SqO9qKO.png)
+
+## AUFGABE 3: JDBC UND DAO – KURSE 
+
+### Dao Allgemein
+
+Dao (Data Access Objekt) ist ein Entwurfsmuster, das den Zugriff auf eine Datenquelle so kapselt, dass diese leicht ausgetauscht werden kann.
