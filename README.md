@@ -232,3 +232,94 @@ private void showAllCourses(){
     }
 }
 ```
+
+### Cli Kurs erstellen
+
+In der Klasse `Cli` wird nun die Methode definiert, um einen Kurs zu erstellen.
+
+```java
+public Optional<Course> insert(Course entity) {
+    try {
+        String sql = "INSERT INTO `courses` ( `name`, `description`, `hours`, `begindate`, `enddate`, `coursetype`) VALUES ( ?,?,?,?,?,?)";
+
+        PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        preparedStatement.setString(1, entity.getName());
+        preparedStatement.setString(2, entity.getDescription());
+        preparedStatement.setInt(3, entity.getHours());
+        preparedStatement.setDate(4, entity.getBeginDate());
+        preparedStatement.setDate(5, entity.getEndDate());
+        preparedStatement.setString(6, entity.getCourseType().toString());
+
+        int affectedRows = preparedStatement.executeUpdate();
+        if(affectedRows == 0) {
+            return Optional.empty();
+        }
+
+        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+        if(generatedKeys.next()) {
+            return this.getById(generatedKeys.getLong(1));
+        } else {
+            return Optional.empty();
+        }
+
+    } catch (Exception e) {
+        //TODO: handle exception
+    }
+    return Optional.empty();
+}
+```
+
+### Cli Updated eines Kurses
+
+In der Klasse `Cli` wird nun die Methode definiert, um einen Kurs upzudaten.
+
+```java
+public Optional<Course> update(Course entitiy) {
+    String sql = "UPDATE `courses` SET `name` = ?, `description` = ?, `hours` = ?, `begindate` = ?, `enddate` = ?, `coursetype` = ? WHERE `courses`.`id` = ?";
+
+    if(getById(entitiy.getId()) == null){
+        return Optional.empty();
+    } else {
+        try {
+            PreparedStatement preparedStatement;
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, entitiy.getName());
+            preparedStatement.setString(2, entitiy.getDescription());
+            preparedStatement.setInt(3, entitiy.getHours());
+            preparedStatement.setDate(4, entitiy.getBeginDate());
+            preparedStatement.setDate(5, entitiy.getEndDate());
+            preparedStatement.setString(6, entitiy.getCourseType().toString());
+            preparedStatement.setLong(7, entitiy.getId());
+
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if(affectedRows == 0){
+                return Optional.empty();
+            } else {
+                return this.getById(entitiy.getId());
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    return null;
+}
+```
+
+In der Cli wird der geupdatete Kurs so erstellt.
+
+```java
+Optional<Course> optionalCourseUpdated = repo.update(
+    new Course(
+        course.getId(), 
+        name.equals("") ? course.getName() : name, 
+        description.equals("") ? course.getDescription() : description,
+        hours.equals("") ? course.getHours() : Integer.parseInt(hours),
+        dateFrom.equals("") ? course.getBeginDate() : Date.valueOf(dateFrom),
+        dateTo.equals("") ? course.getEndDate() : Date.valueOf(dateTo),
+        courseType.equals("") ? course.getCourseType() : CourseType.valueOf(courseType)
+        )
+);
+```
+

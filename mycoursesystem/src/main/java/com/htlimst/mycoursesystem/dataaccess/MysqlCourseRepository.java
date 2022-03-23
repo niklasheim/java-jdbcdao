@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,33 @@ public class MysqlCourseRepository implements MyCourseRepository {
     }
 
     public Optional<Course> insert(Course entity) {
-        return null;
+        try {
+            String sql = "INSERT INTO `courses` ( `name`, `description`, `hours`, `begindate`, `enddate`, `coursetype`) VALUES ( ?,?,?,?,?,?)";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, entity.getName());
+            preparedStatement.setString(2, entity.getDescription());
+            preparedStatement.setInt(3, entity.getHours());
+            preparedStatement.setDate(4, entity.getBeginDate());
+            preparedStatement.setDate(5, entity.getEndDate());
+            preparedStatement.setString(6, entity.getCourseType().toString());
+
+            int affectedRows = preparedStatement.executeUpdate();
+            if(affectedRows == 0) {
+                return Optional.empty();
+            }
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if(generatedKeys.next()) {
+                return this.getById(generatedKeys.getLong(1));
+            } else {
+                return Optional.empty();
+            }
+
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+        return Optional.empty();
     }
 
     public Optional<Course> getById(Long id) {
@@ -58,12 +85,52 @@ public class MysqlCourseRepository implements MyCourseRepository {
         return null;
     }
 
-    public Optional<Course> update(Course entitiy) {
+    public Optional<Course> update(Course entity) {
+        String sql = "UPDATE `courses` SET `name` = ?, `description` = ?, `hours` = ?, `begindate` = ?, `enddate` = ?, `coursetype` = ? WHERE `courses`.`id` = ?";
+
+        if(getById(entity.getId()) == null){
+            return Optional.empty();
+        } else {
+            try {
+                PreparedStatement preparedStatement;
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setString(1, entity.getName());
+                preparedStatement.setString(2, entity.getDescription());
+                preparedStatement.setInt(3, entity.getHours());
+                preparedStatement.setDate(4, entity.getBeginDate());
+                preparedStatement.setDate(5, entity.getEndDate());
+                preparedStatement.setString(6, entity.getCourseType().toString());
+                preparedStatement.setLong(7, entity.getId());
+
+                int affectedRows = preparedStatement.executeUpdate();
+
+                if(affectedRows == 0){
+                    return Optional.empty();
+                } else {
+                    return this.getById(entity.getId());
+                }
+                
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 
     public void deleteById(Long id) {
-        
+        String sql = "DELETE FROM `courses` where `id` = ?";
+
+        try {
+            if(getById(id) != null){
+                PreparedStatement preparableStatement;
+                preparableStatement = conn.prepareStatement(sql);
+                preparableStatement.setLong(1, id);
+                preparableStatement.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Course> findAllCoursesByName(String name) {
