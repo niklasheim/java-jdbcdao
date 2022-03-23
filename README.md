@@ -323,3 +323,21 @@ Optional<Course> optionalCourseUpdated = repo.update(
 );
 ```
 
+## AUFGABE 4: JDBC UND DAO – STUDENTEN
+
+Kopieren und anpassen der vorhandenen Klassen und Funktionem. Angepasst muessen werden die Datenfelder und entsprechende Funktionen.
+> Siehe Projekt `mycoursesystem-student` anbei.
+
+## AUFGABE 5: JDBC UND DAO – BUCHUNGEN 
+
+### Textuale Beschreibung
+
+Es gibt ein `BaseRepository` gleich wie bei den anderen (Student und Courses) mit den CRUD-Operationen (Create, Read (byID & All), Update Delete). 
+
+Im `MyBuchungRepository` stehen weitere Methoden die speziell fuer Buchungen verwendet werden. Beispielsweise die Ausgabe aller Schueler die Kurs "xyz" belegen. 
+
+### UML
+
+Buchungen dienen als `n zu m` Verbindung zwischen Studenten und Kursen. Sie beinhalten die Primaerschluessel der beiden. So kann ein Student mehrere Kurse belegen und ein Kurs von vielen Studenten genommen werden. 
+
+![UML](https://i.imgur.com/aLn9ej4.png)
